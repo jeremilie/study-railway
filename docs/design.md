@@ -1,3 +1,4 @@
+
 # Study Railway design
 
 Build the supplied local-only study planner using React, TypeScript, Vite, R3F/Three/Drei, Zustand, Dexie, GSAP, and Web Audio. No remote assets or services at runtime.

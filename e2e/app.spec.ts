@@ -17,8 +17,6 @@ test("desktop scene, keyboard controls and accessibility", async ({ page }) => {
   ).toBeVisible();
   await page.getByRole("button", { name: "Zoom in", exact: true }).click();
   await page.getByRole("button", { name: "Reset camera", exact: true }).click();
-  await page.getByRole("button", { name: "Select station The world of cells", exact: true }).click();
-  await expect(page.getByText('Explore the tiny building blocks of life. Review cell structures, organelles, and how they work together.', { exact: true })).toBeVisible();
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
   const accessibility = await new AxeBuilder({ page })
@@ -32,9 +30,11 @@ test("desktop scene, keyboard controls and accessibility", async ({ page }) => {
     })),
   ).toEqual([]);
   expect(errors).toEqual([]);
-  await page.getByRole('button', { name: 'Nature sounds off' }).click();
-  await expect(page.getByRole('button', { name: 'Nature sounds on' })).toHaveAttribute('aria-pressed', 'true');
-  await page.getByRole('button', { name: 'Nature sounds on' }).click();
+  await page.getByRole("button", { name: "Play nature sounds" }).click();
+  await expect(
+    page.getByRole("button", { name: "Pause nature sounds" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Pause nature sounds" }).click();
 });
 
 test("timer pauses across reload, resumes, completes once, and offers a break", async ({

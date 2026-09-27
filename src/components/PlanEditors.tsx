@@ -75,7 +75,7 @@ export function SubjectEditor({
           <legend>Your scenery</legend>
           <div className="biome-options">
             {(
-              ["forest", "mountains", "village", "coast", "tundra"] as Biome[]
+              ["forest", "mountains", "village", "coast"] as Biome[]
             ).map((b) => (
               <button
                 type="button"

@@ -9,12 +9,9 @@ import { DailyProgress } from "../components/DailyProgress";
 import { SessionHistory } from "../components/SessionHistory";
 import { Icon } from "../components/Icon";
 import { useMedia } from "../lib/hooks";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import "../styles/layout-modes.css";
 
 export function App() {
   const [page, setPage] = useState<Page>("railway");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [ownership, setOwnership] = useState<
     "waiting" | "owner" | "blocked" | "error"
   >("waiting");
@@ -130,36 +127,14 @@ export function App() {
     day: "numeric",
   });
   return (
-    <div
-      className={`app-layout${sidebarCollapsed ? " sidebar-collapsed" : ""}`}
-    >
+    <>
       <a className="skip-link" href="#main">
         Skip to study controls
       </a>
-      <div className="sidebar-shell">
-        <Sidebar page={page} setPage={setPage} collapsed={sidebarCollapsed} />
-      </div>
+      <Sidebar page={page} setPage={setPage} />
       <div className="app-body">
         <header className="topbar">
-          <div className="topbar-leading">
-            <button
-              type="button"
-              className="icon-button sidebar-toggle"
-              aria-label={
-                sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
-              }
-              aria-expanded={!sidebarCollapsed}
-              aria-controls="study-sidebar"
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              onClick={() => setSidebarCollapsed((collapsed) => !collapsed)}
-            >
-              {sidebarCollapsed ? (
-                <PanelLeftOpen size={19} aria-hidden="true" />
-              ) : (
-                <PanelLeftClose size={19} aria-hidden="true" />
-              )}
-            </button>
-            <div className="breadcrumb">
+          <div className="breadcrumb">
               <Icon name="leaf" size={16} />
               <span>Your space to grow</span>
               <span>/</span>
@@ -170,7 +145,6 @@ export function App() {
                     ? "Study planner"
                     : "Journey journal"}
               </strong>
-            </div>
           </div>
           <div className="topbar-right">
             <span className="save-indicator">
@@ -282,6 +256,6 @@ export function App() {
           {notice}
         </div>
       </div>
-    </div>
+    </>
   );
 }

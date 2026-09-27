@@ -23,14 +23,9 @@ import {
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { useStudyStore } from "../store/useStudyStore";
 import { useMedia, useNow } from "../lib/hooks";
-import { isComplete } from "../lib/model";
+import { isComplete, remaining } from "../lib/model";
 import { routeCurve, stationPosition } from "../lib/routes";
-import { NatureBiome } from "./NatureBiome";
-import { StationBuilding } from "./StationBuilding";
-import { sceneLayout, trainRoutePosition } from "../lib/sceneLayout";
-import { trainUnits } from "../lib/journey";
-import { ScenicLandmark } from "./ScenicLandmark";
-import { TundraDetails } from "./TundraDetails";
+import { NatureBiome, Cottage } from "./NatureBiome";
 
 const MemoNatureBiome = memo(NatureBiome);
 function Sleepers({
@@ -235,15 +230,12 @@ function SceneContent({
   const stations = data.stations.filter(
     (s) => s.subjectId === data.selectedSubject,
   );
-  const layout = useMemo(() => sceneLayout(stations.length), [stations.length]);
-  const curve = layout.curve;
+  const curve = routeCurve;
   const timer = data.timer;
-  const units = trainUnits(data, data.selectedSubject, now);
-  const trainProgress = trainRoutePosition(units, stations.length);
-  const fit = Math.min(
-    size.width / (13.2 + layout.extensionX * 1.05 + layout.extensionZ * 0.65),
-    size.height / (9.3 + layout.extensionZ * 0.8 + layout.extensionX * 0.45),
-  );
+  const index = Math.max(0, stations.findIndex((s) => s.id === data.selectedStation));
+  const target = stationPosition(index, stations.length);
+  const trainProgress = timer?.kind === "focus" ? target - .16 + (reduced ? 0 : 1 - remaining(timer, now) / timer.duration) * .16 : timer?.kind === "break" ? .24 : target - (data.breakReady ? 0 : .09);
+  const fit = Math.min(size.width / 13.2, size.height / 9.3);
   const previousFit = useRef(0);
   const previousZoom = useRef(zoom);
   const previousCenter = useRef(new Vector3());
@@ -258,7 +250,7 @@ function SceneContent({
   }, [gl, onUnavailable]);
   useLayoutEffect(() => {
     if (!("isOrthographicCamera" in camera)) return;
-    const center = new Vector3(...layout.center);
+    const center = new Vector3(0, .3, 0);
     if (!previousFit.current || previousReset.current !== reset) {
       camera.position.set(center.x + 11, center.y + 9.7, center.z + 13);
       controls.current?.target.copy(center);
@@ -277,11 +269,7 @@ function SceneContent({
     camera.updateProjectionMatrix();
     controls.current?.update();
     invalidate();
-  }, [fit, zoom, reset, layout, camera, invalidate]);
-  useEffect(() => {
-    gl.domElement.dataset.trainUnits = units.toFixed(5);
-    gl.domElement.dataset.stationCount = String(stations.length);
-  }, [gl, units, stations.length]);
+  }, [fit, zoom, reset, camera, invalidate]);
   const evening = data.settings.lighting === "evening";
   const sunrise = data.settings.lighting === "sunrise";
   return (
@@ -310,27 +298,8 @@ function SceneContent({
         shadow-normalBias={0.05}
       />
       <group position={[0, -0.2, 0]}>
-        <MemoNatureBiome
-          biome={subject?.biome ?? "forest"}
-          extensionX={layout.extensionX}
-          extensionZ={layout.extensionZ}
-        />
-        <Rails
-          color={subject?.color ?? "#54866a"}
-          curve={curve}
-          snowy={subject?.biome === "tundra"}
-        />
-        {layout.landmarks.map((position, index) => (
-          <ScenicLandmark
-            key={`${subject?.biome}-${index}`}
-            biome={subject?.biome ?? "forest"}
-            index={index}
-            position={position}
-          />
-        ))}
-        {subject?.biome === "tundra" && (
-          <TundraDetails bounds={layout.bounds} reducedMotion={reduced} />
-        )}
+        <MemoNatureBiome biome={subject?.biome ?? "forest"} />
+        <Rails color={subject?.color ?? "#54866a"} curve={curve} snowy={false} />
         {stations.map((station, i) => {
           const p = curve.getPointAt(stationPosition(i, stations.length));
           const tangent = curve.getTangentAt(
@@ -350,11 +319,10 @@ function SceneContent({
                   emissiveIntensity={0.2}
                 />
               </mesh>
-              <StationBuilding
-                id={station.id}
+              <Cottage
                 position={[outward.x, 0.2, outward.z]}
-                snowy={subject?.biome === "tundra"}
-                complete={isComplete(station)}
+                scale={0.62}
+                color={isComplete(station) ? "#f5db9b" : "#e6dbc2"}
               />
               <Html
                 portal={

@@ -1,6 +1,5 @@
 import {
   TrainFront,
-  Snowflake,
   Leaf,
   Mountain,
   Waves,
@@ -40,7 +39,6 @@ import {
   MapPin,
 } from "lucide-react";
 const icons = {
-  snowflake: Snowflake,
   train: TrainFront,
   leaf: Leaf,
   mountain: Mountain,
@@ -105,5 +103,4 @@ export const biomeIcon = {
   mountains: "mountain",
   coast: "waves",
   village: "village",
-  tundra: "snowflake",
 } as const;

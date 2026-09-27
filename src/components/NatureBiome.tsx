@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { DoubleSide, Shape, ExtrudeGeometry } from "three";
 import type { Biome } from "../types/study";
 
@@ -8,14 +8,12 @@ export function Tree({
   scale = 1,
   color = "#739578",
   round = false,
-  snowy = false,
 }: {
   x: number;
   z: number;
   scale?: number;
   color?: string;
   round?: boolean;
-  snowy?: boolean;
 }) {
   return (
     <group position={[x, 0.06, z]} scale={scale}>
@@ -33,15 +31,7 @@ export function Tree({
           <mesh key={i} position={[0, 0.6 + i * 0.32, 0]} castShadow>
             <coneGeometry args={[0.46 - i * 0.095, 0.83 - i * 0.12, 6]} />
             <meshStandardMaterial
-              color={
-                snowy
-                  ? i === 2
-                    ? "#edf2ed"
-                    : "#a4bab0"
-                  : i === 2
-                    ? "#97ad82"
-                    : color
-              }
+              color={i === 2 ? "#97ad82" : color}
               flatShading
             />
           </mesh>
@@ -116,24 +106,15 @@ export function Cottage({
     </group>
   );
 }
-export function NatureBiome({
-  biome,
-  extensionX = 0,
-  extensionZ = 0,
-}: {
-  biome: Biome;
-  extensionX?: number;
-  extensionZ?: number;
-}) {
-  const snowy = biome === "tundra";
+export function NatureBiome({ biome }: { biome: Biome }) {
   const island = useMemo(() => {
     const shape = new Shape();
     const n = 18;
     for (let i = 0; i <= n; i++) {
       const a = (i / n) * Math.PI * 2;
       const r = 1 + Math.sin(i * 9.3) * 0.03;
-      const x = Math.cos(a) * 5.55 * r + Math.max(0, Math.cos(a)) * extensionX;
-      const y = Math.sin(a) * 4.3 * r + Math.max(0, Math.sin(a)) * extensionZ;
+      const x = Math.cos(a) * 5.55 * r;
+      const y = Math.sin(a) * 4.3 * r;
       if (i === 0) shape.moveTo(x, y);
       else shape.lineTo(x, y);
     }
@@ -145,8 +126,7 @@ export function NatureBiome({
       bevelSegments: 1,
       steps: 1,
     });
-  }, [extensionX, extensionZ]);
-  useEffect(() => () => island.dispose(), [island]);
+  }, []);
   const trees = useMemo(
     () =>
       Array.from({ length: biome === "forest" ? 54 : 28 }, (_, i) => {
@@ -170,7 +150,7 @@ export function NatureBiome({
         castShadow
       >
         <meshStandardMaterial
-          color={snowy ? "#e3ece7" : biome === "coast" ? "#d4d2af" : "#b8c7a2"}
+          color={biome === "coast" ? "#d4d2af" : "#b8c7a2"}
           flatShading
         />
       </mesh>
@@ -181,8 +161,8 @@ export function NatureBiome({
       >
         <circleGeometry args={[1, 40]} />
         <meshStandardMaterial
-          color={snowy ? "#b6cfd8" : "#8bbfc0"}
-          roughness={snowy ? 0.65 : 0.3}
+          color="#8bbfc0"
+          roughness={0.3}
         />
       </mesh>
       <mesh
@@ -191,7 +171,7 @@ export function NatureBiome({
         scale={[biome === "coast" ? 3.4 : 2, 1.24, 1]}
       >
         <circleGeometry args={[1, 32]} />
-        <meshStandardMaterial color={snowy ? "#f1f4ef" : "#d1cfb0"} />
+        <meshStandardMaterial color="#d1cfb0" />
       </mesh>
       {[0, 1, 2].map((i) => (
         <mesh
@@ -213,20 +193,19 @@ export function NatureBiome({
         x={-2.6}
         z={-2.4}
         scale={biome === "mountains" ? 1.4 : 0.9}
-        snow={biome === "mountains" || snowy}
+        snow={biome === "mountains"}
       />
       <Mountain
         x={-0.8}
         z={-3.1}
         scale={biome === "mountains" ? 1.05 : 0.72}
-        snow={biome === "mountains" || snowy}
+        snow={biome === "mountains"}
       />
       {trees.map((tree, i) => (
         <Tree
           key={i}
           {...tree}
           round={biome === "village"}
-          snowy={snowy}
           color={["#678b70", "#789878", "#8ba17b", "#527961"][i % 4]}
         />
       ))}
@@ -237,7 +216,6 @@ export function NatureBiome({
           z={3.25 + Math.sin(i * 2) * 0.28}
           scale={0.38 + (i % 3) * 0.1}
           color="#769778"
-          snowy={snowy}
         />
       ))}
       {Array.from({ length: 13 }, (_, i) => (

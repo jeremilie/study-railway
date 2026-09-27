@@ -1,4 +1,4 @@
-export type Biome = "forest" | "mountains" | "village" | "coast" | "tundra";
+export type Biome = "forest" | "mountains" | "village" | "coast";
 export interface Subject {
   id: string;
   name: string;
@@ -41,8 +41,6 @@ export interface Timer {
   status: "running" | "paused";
 }
 export interface StudyData {
-  /** Additive optional field so existing version-1 snapshots remain valid. */
-  trainProgress?: Record<string, number>;
   subjects: Subject[];
   stations: Station[];
   sessions: Session[];

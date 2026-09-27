@@ -3,9 +3,8 @@ import {
   lazy,
   Suspense,
   useCallback,
-  useLayoutEffect,
-  useState,
   useRef,
+  useState,
   type ReactNode,
 } from "react";
 import { useStudyStore } from "../store/useStudyStore";
@@ -41,7 +40,6 @@ const biomeNames = {
   mountains: "The Alpine Passage",
   village: "Meadowbrook Village",
   coast: "The Coastal Way",
-  tundra: "The Frozen Vale",
 };
 export function MapPanel() {
   const { data, settings } = useStudyStore();
@@ -50,118 +48,11 @@ export function MapPanel() {
   const [webgl, setWebgl] = useState(hasWebGL);
   const [reset, setReset] = useState(0);
   const [zoom, setZoom] = useState(1);
-  const [expanded, setExpanded] = useState(false);
-  const panel = useRef<HTMLElement>(null);
-  const expandButton = useRef<HTMLButtonElement>(null);
-  const focusAfterExit = useRef<HTMLButtonElement | null>(null);
   const labels = useRef<HTMLDivElement>(null);
   const unavailable = useCallback(() => setWebgl(false), []);
   const show3D = !small && webgl && data.settings.view === "3d";
-  useLayoutEffect(() => {
-    if (!expanded) {
-      // Restore after React's mutation phase, which otherwise restores the
-      // previously focused station over a focus call made during cleanup.
-      focusAfterExit.current?.focus({ preventScroll: true });
-      focusAfterExit.current = null;
-      return;
-    }
-    if (!panel.current) return;
-    const map = panel.current;
-    const returnFocus = expandButton.current;
-    focusAfterExit.current = returnFocus;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    // Keep the scene in its original React/DOM tree while making the rest of
-    // the page unavailable to keyboard and assistive-technology navigation.
-    const background: Array<{
-      element: HTMLElement;
-      inert: boolean;
-      ariaHidden: string | null;
-    }> = [];
-    let branch: HTMLElement = map;
-    while (branch.parentElement) {
-      for (const sibling of branch.parentElement.children) {
-        if (sibling !== branch && sibling instanceof HTMLElement) {
-          background.push({
-            element: sibling,
-            inert: sibling.inert,
-            ariaHidden: sibling.getAttribute("aria-hidden"),
-          });
-          sibling.inert = true;
-          sibling.setAttribute("aria-hidden", "true");
-        }
-      }
-      if (branch.parentElement === document.body) break;
-      branch = branch.parentElement;
-    }
-    returnFocus?.focus({ preventScroll: true });
-
-    const focusable = () =>
-      Array.from(
-        map.querySelectorAll<HTMLElement>(
-          "button, a[href], input, select, textarea, [tabindex]",
-        ),
-      ).filter(
-        (element) =>
-          element.tabIndex >= 0 &&
-          !element.matches(":disabled") &&
-          !element.closest("[inert]") &&
-          element.getClientRects().length > 0 &&
-          getComputedStyle(element).visibility !== "hidden",
-      );
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        setExpanded(false);
-      } else if (event.key === "Tab") {
-        const elements = focusable();
-        const first = elements[0];
-        const last = elements[elements.length - 1];
-        if (!first) {
-          event.preventDefault();
-          map.focus();
-        } else if (
-          event.shiftKey &&
-          (document.activeElement === first || document.activeElement === map)
-        ) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    const containFocus = (event: FocusEvent) => {
-      if (event.target instanceof Node && !map.contains(event.target))
-        returnFocus?.focus({ preventScroll: true });
-    };
-    document.addEventListener("keydown", onKeyDown, true);
-    document.addEventListener("focusin", containFocus);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown, true);
-      document.removeEventListener("focusin", containFocus);
-      document.body.style.overflow = previousOverflow;
-      for (const { element, inert, ariaHidden } of background) {
-        element.inert = inert;
-        if (ariaHidden === null) element.removeAttribute("aria-hidden");
-        else element.setAttribute("aria-hidden", ariaHidden);
-      }
-    };
-  }, [expanded]);
   return (
-    <div className="map-slot">
-      <section
-        ref={panel}
-        className={`map-panel lighting-${data.settings.lighting}${expanded ? " map-panel-expanded" : ""}`}
-        role={expanded ? "dialog" : undefined}
-        aria-modal={expanded || undefined}
-        aria-label={expanded ? "Expanded railway map" : undefined}
-        aria-labelledby={expanded ? undefined : "map-heading"}
-        tabIndex={expanded ? -1 : undefined}
-      >
+    <section className={`map-panel lighting-${data.settings.lighting}`} aria-labelledby="map-heading">
         <div className="map-topbar">
           <div className="map-line-label">
             <span
@@ -174,8 +65,7 @@ export function MapPanel() {
               {subject ? biomeNames[subject.biome] : "A new adventure"}
             </span>
           </div>
-          <div className="map-view-actions">
-            <div className="view-switch" aria-label="Map view">
+          <div className="view-switch" aria-label="Map view">
               <button
                 disabled={!webgl || small}
                 aria-pressed={show3D}
@@ -191,18 +81,6 @@ export function MapPanel() {
               >
                 2D
               </button>
-            </div>
-            <button
-              ref={expandButton}
-              type="button"
-              className="icon-button map-expand-toggle"
-              aria-label={expanded ? "Exit expanded map" : "Expand map"}
-              title={expanded ? "Exit expanded map (Escape)" : "Expand map"}
-              aria-expanded={expanded}
-              onClick={() => setExpanded((value) => !value)}
-            >
-              <Icon name={expanded ? "close" : "expand"} size={18} />
-            </button>
           </div>
         </div>
         <div className="map-title">
@@ -303,7 +181,6 @@ export function MapPanel() {
             </>
           )}
         </div>
-      </section>
-    </div>
+    </section>
   );
 }

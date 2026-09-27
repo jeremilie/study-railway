@@ -4,26 +4,15 @@ import { Icon, biomeIcon } from "./Icon";
 import { SubjectEditor } from "./PlanEditors";
 import type { Subject } from "../types/study";
 export type Page = "railway" | "planner" | "journal";
-export function Sidebar({
-  page,
-  setPage,
-  collapsed = false,
-}: {
+export function Sidebar({ page, setPage }: {
   page: Page;
   setPage: (page: Page) => void;
-  collapsed?: boolean;
 }) {
   const data = useStudyStore((s) => s.data);
   const select = useStudyStore((s) => s.selectSubject);
   const [editing, setEditing] = useState<Subject | "new" | null>(null);
   return (
-    <aside
-      id="study-sidebar"
-      className="sidebar"
-      aria-label="Study navigation"
-      aria-hidden={collapsed || undefined}
-      inert={collapsed}
-    >
+    <aside className="sidebar">
       <a
         href="#main"
         className="brand"

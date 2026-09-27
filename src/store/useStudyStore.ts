@@ -10,8 +10,6 @@ import {
   removeSubject,
 } from "../lib/model";
 import { loadData, saveData } from "../db/db";
-import { checkpointJourney } from "../lib/journey";
-import { MAX_STATIONS } from "../lib/planning";
 
 interface Store {
   data: StudyData;
@@ -97,10 +95,8 @@ export const useStudyStore = create<Store>((set, get) => {
   function change(fn: (data: StudyData) => StudyData, notice?: string) {
     if (!get().loaded) return;
     const old = get().data;
-    const checkpoint = checkpointJourney(old, Date.now());
-    const changed = fn(checkpoint);
-    if (changed === checkpoint) return;
-    const data = checkpointJourney(changed, Date.now());
+    const data = fn(old);
+    if (data === old) return;
     set({ data, ...(notice ? { notice } : {}) });
     persist(data);
   }
@@ -186,15 +182,6 @@ export const useStudyStore = create<Store>((set, get) => {
       ),
     saveStation: (station) =>
       change((d) => {
-        const existing = d.stations.find((s) => s.id === station.id);
-        const addingToSubject =
-          !existing || existing.subjectId !== station.subjectId;
-        if (
-          addingToSubject &&
-          d.stations.filter((s) => s.subjectId === station.subjectId).length >=
-            MAX_STATIONS
-        )
-          return d;
         if (
           d.timer ||
           !station.title.trim() ||

@@ -30,7 +30,7 @@ Browser tests use an installed Google Chrome. To use Playwright's bundled Chromi
 - Add, rename, recolor, or delete lines. Add, edit, reorder, and manually complete stations in Study planner. Reaching a station's target completes it automatically. Plan edits are disabled during an active or paused session.
 - The journal retains completed sessions even when their subject or station is deleted. Today’s totals use your device’s local calendar date.
 - Drag the 3D scene to orbit, scroll to zoom, and right-drag to pan. Buttons zoom/reset the camera. Switch lighting or choose 2D anytime. Small screens and unavailable WebGL use 2D automatically.
-- Nature sounds synthesize quiet wind/water with Web Audio, after you explicitly turn them on. They stop when the timer panel is unmounted and never autoplay on reload.
+- Choose synthesized nature sounds or import your own local audio file. Audio only starts after you explicitly press play, loops while playing, and never autoplays on reload.
 
 ## Local data and recovery
 

@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useStudyStore } from "../store/useStudyStore";
 import type { Station } from "../types/study";
 import { isComplete } from "../lib/model";
 import { StationEditor } from "./PlanEditors";
 import { Icon } from "./Icon";
-import { MAX_STATIONS } from "../lib/planning";
 export function StationList({ expanded = false }: { expanded?: boolean }) {
   const { data, selectStation, moveStation, completeStation } = useStudyStore();
   const stations = data.stations.filter(
@@ -12,8 +11,7 @@ export function StationList({ expanded = false }: { expanded?: boolean }) {
   );
   const subject = data.subjects.find((s) => s.id === data.selectedSubject);
   const [editing, setEditing] = useState<Station | "new" | null>(null);
-  const [details, setDetails] = useState(data.selectedStation);
-  useEffect(() => setDetails(data.selectedStation), [data.selectedStation]);
+  const [details, setDetails] = useState("");
   return (
     <section
       className={`station-panel panel ${expanded ? "expanded-planner" : ""}`}
@@ -29,18 +27,13 @@ export function StationList({ expanded = false }: { expanded?: boolean }) {
         <button
           className="text-button"
           data-focus-fallback
-          disabled={!!data.timer || !subject || stations.length >= MAX_STATIONS}
+          disabled={!!data.timer || !subject}
           onClick={() => setEditing("new")}
         >
           <Icon name="plus" size={16} />
           Add station
         </button>
       </div>
-      {stations.length >= MAX_STATIONS && (
-        <p className="station-limit" role="status">
-          Maximum of 10 stations reached.
-        </p>
-      )}
       <ol className="station-list">
         {stations.map((station, index) => (
           <li

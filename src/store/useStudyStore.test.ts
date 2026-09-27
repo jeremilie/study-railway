@@ -23,37 +23,6 @@ beforeEach(() => {
 });
 
 describe("store recovery and action boundaries", () => {
-  it("enforces ten stations per subject but permits editing an existing station", async () => {
-    const store = useStudyStore.getState();
-    for (let i = 0; i < 12; i++)
-      store.saveStation({
-        id: `extra-${i}`,
-        subjectId: "biology",
-        title: `Goal ${i}`,
-        target: 3,
-        description: "",
-        completed: 0,
-        manualComplete: false,
-      });
-    expect(
-      useStudyStore
-        .getState()
-        .data.stations.filter((s) => s.subjectId === "biology"),
-    ).toHaveLength(10);
-    store.saveStation({
-      ...useStudyStore
-        .getState()
-        .data.stations.find((s) => s.id === "biology-0")!,
-      title: "Updated at capacity",
-    });
-    expect(
-      useStudyStore.getState().data.stations.find((s) => s.id === "biology-0")
-        ?.title,
-    ).toBe("Updated at capacity");
-    await vi.waitFor(() =>
-      expect(useStudyStore.getState().saveStatus).toBe("saved"),
-    );
-  });
   it("concurrent hydration cannot replace a session started after loading", async () => {
     let first!: (value: StudyData) => void;
     let second!: (value: StudyData) => void;
