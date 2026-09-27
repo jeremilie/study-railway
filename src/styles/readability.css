@@ -1,0 +1,210 @@
+/* Contrast and type-size floor for functional text, including compact layouts. */
+.scene-label-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.scene-label-layer button {
+  pointer-events: auto;
+}
+.brand-tagline,
+.main-nav button,
+.save-indicator,
+.page-intro p,
+.empty-state p,
+.count-pill,
+.today-badge,
+.daily-stats strong small,
+.daily-stats > div > span:last-child,
+.daily-note p,
+.journal-link,
+.timer-tabs button,
+.timer-presets button,
+.ambient-button,
+.page-footer,
+.sidebar-note > span,
+.sidebar-footer,
+.sidebar-footer small,
+.workspace-label,
+.line-heading .workspace-label,
+.intro-eyebrow,
+.eyebrow,
+.breadcrumb,
+.header-date,
+.map-line-label,
+.map-line-label strong,
+.biome-tag,
+.biome-tag select,
+.map-caption,
+.timer-digits small,
+.destination div > span,
+.station-subtitle,
+.next-label,
+.station-footer,
+.history-list li > div > span,
+.field-hint,
+.route-2d li small,
+.field > span,
+.modal-intro,
+legend,
+.biome-options button {
+  color: #596b50;
+}
+.view-switch button {
+  color: #596b50;
+}
+.add-line {
+  color: #596b50 !important;
+}
+.intro-stamp,
+.timer-presets button.selected,
+.station-info strong {
+  color: #536747;
+}
+.scene-label,
+.scene-label small {
+  color: #435d3a;
+}
+.intro-eyebrow,
+.eyebrow,
+.workspace-label,
+.line-heading .workspace-label {
+  font-size: 9px;
+}
+.breadcrumb,
+.save-indicator,
+.header-date {
+  font-size: 10px;
+}
+.page-intro p {
+  font-size: 13px;
+}
+.main-nav button,
+.subject-select {
+  font-size: 13px;
+}
+.map-line-label,
+.map-line-label strong,
+.biome-tag,
+.biome-tag select {
+  font-size: 10px;
+}
+.map-caption {
+  font-size: 9px;
+}
+.timer-card .card-heading h2,
+.daily-panel .card-heading h2 {
+  font-size: 13px;
+}
+.timer-tabs button,
+.timer-presets button,
+.ambient-button {
+  font-size: 11px;
+}
+.timer-digits small {
+  font-size: 7.5px;
+  letter-spacing: 1px;
+}
+.destination div > span {
+  font-size: 8px;
+}
+.destination strong,
+.start-button {
+  font-size: 12px;
+}
+.section-heading .text-button {
+  font-size: 11px;
+}
+.station-info strong {
+  font-size: 12px;
+}
+.station-subtitle {
+  font-size: 10px;
+}
+.next-label {
+  font-size: 7px;
+}
+.station-footer,
+.daily-stats > div > span:last-child,
+.daily-note p,
+.journal-link,
+.page-footer {
+  font-size: 10px;
+}
+.today-badge,
+.count-pill {
+  font-size: 8px;
+}
+.daily-stats strong small {
+  font-size: 10px;
+}
+.primary {
+  background: #466849;
+}
+.icon-button {
+  color: #607452;
+}
+.subject-edit {
+  opacity: 0.65;
+}
+.scene-label {
+  font-size: 10px;
+  max-width: 165px;
+}
+.scene-label small {
+  font-size: 7px;
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .main-nav button,
+  .subject-select {
+    font-size: 11px;
+  }
+  .workspace-label,
+  .line-heading .workspace-label {
+    font-size: 8px;
+  }
+  .daily-stats > div > span:last-child {
+    font-size: 8px;
+  }
+  .next-label {
+    display: none;
+  }
+  .map-caption {
+    font-size: 7px;
+  }
+  .biome-tag {
+    font-size: 8px;
+  }
+}
+@media (max-width: 760px) {
+  .main-nav button {
+    font-size: 11px;
+  }
+  .subject-select {
+    font-size: 11px;
+  }
+  .page-intro p {
+    font-size: 12px;
+  }
+  .map-line-label,
+  .map-line-label strong {
+    font-size: 10px;
+  }
+  .eyebrow,
+  .intro-eyebrow {
+    font-size: 8px;
+  }
+  .map-caption {
+    font-size: 8px;
+  }
+  .daily-stats > div > span:last-child {
+    font-size: 9px;
+  }
+  .page-footer {
+    font-size: 9px;
+  }
+  .next-label {
+    font-size: 6px;
+  }
+}
